@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Run the real tests (live ArcGIS Geocoding + Basemaps API calls, not mocked)
+        env:
+          ARCGIS_API_KEY: ${{ secrets.ARCGIS_API_KEY }}
+        run: python -m pytest tests/ -v
+      - name: Run the real CLI end-to-end
+        env:
+          ARCGIS_API_KEY: ${{ secrets.ARCGIS_API_KEY }}
+        run: |
+          python -m app.main "380 New York St, Redlands, CA" "1 Infinite Loop, Cupertino, CA"
