@@ -22,9 +22,9 @@ Styles vector tile service) for the home area.
   service (`NAServer/Route_World/solve`) for a real road-network driving time
   and distance between home and each company, plus the route's own real
   geometry. Companies are ranked by real drive time when a route is found,
-  falling back to straight-line distance otherwise (an unreachable address, a
-  transient error, or an API key without the Routing privilege yet -- see "API
-  key setup" below).
+  falling back to straight-line distance otherwise (an unreachable address or
+  a transient error -- see "API key setup" below for the privilege this
+  needs).
 - **Interactive map**: `app/map_export.py` writes a real, self-contained
   `commute_map.html` (Leaflet.js via CDN, OpenStreetMap tiles, no build step)
   plotting the real geocoded home/company markers and, where routing
@@ -60,16 +60,9 @@ data into HTML.
 Needs an [ArcGIS Location Platform](https://developers.arcgis.com) API key
 (free tier) with the **Geocoding**, **Basemaps**, and **Routing** location-service
 privileges enabled, scoped as a "Public application" credential with no item
-access (the least-privilege option for this kind of scripted use). Routing was
-added after Geocoding/Basemaps were first set up -- if the key predates this
-and hasn't had Routing enabled yet, `drive_route` calls will fail and the
-tool falls back to straight-line distance automatically (a real, visible
-`RoutingError`, not a silent wrong number); enable it on the key's page at
-developers.arcgis.com to get real drive-time ranking.
-
-**Current real status**: this repo's own CI key does not have the Routing
-privilege enabled yet (`User does not have permissions to access
-'world/route.mapserver'`, confirmed live) -- `tests/test_routing.py` skips
-its two tests with that exact message rather than failing CI over something
-only the key's owner can grant. The CLI itself still runs successfully
-either way, since it falls back to straight-line distance automatically.
+access (the least-privilege option for this kind of scripted use). If a key
+doesn't have Routing enabled, `drive_route` calls fail with a real, visible
+`RoutingError` and the tool falls back to straight-line distance automatically
+rather than crashing -- `tests/test_routing.py` also skips its two live tests
+with that same real error message in that case, instead of failing CI over
+something only the key's owner can grant.
