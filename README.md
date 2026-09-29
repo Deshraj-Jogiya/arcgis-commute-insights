@@ -66,3 +66,10 @@ and hasn't had Routing enabled yet, `drive_route` calls will fail and the
 tool falls back to straight-line distance automatically (a real, visible
 `RoutingError`, not a silent wrong number); enable it on the key's page at
 developers.arcgis.com to get real drive-time ranking.
+
+**Current real status**: this repo's own CI key does not have the Routing
+privilege enabled yet (`User does not have permissions to access
+'world/route.mapserver'`, confirmed live) -- `tests/test_routing.py` skips
+its two tests with that exact message rather than failing CI over something
+only the key's owner can grant. The CLI itself still runs successfully
+either way, since it falls back to straight-line distance automatically.
